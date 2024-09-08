@@ -37,6 +37,10 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
+    - name: Import existing S3 bucket
+      run: terraform import aws_s3_bucket.website_bucket ${{ secrets.S3_BUCKET_NAME }}
+      continue-on-error: true
+
     - name: Terraform Apply
       run: |
         terraform apply -auto-approve -var="bucket_name=${{ secrets.S3_BUCKET_NAME }}"

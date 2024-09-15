@@ -63,7 +63,6 @@ resource "aws_iam_policy" "s3_access_policy" {
 
 # Attach the S3 access policy to the IAM user
 resource "aws_iam_user_policy_attachment" "user_s3_policy_attachment" {
-  user       = aws_iam_user.s3_user.name
   policy_arn = aws_iam_policy.s3_access_policy.arn
 }
 

@@ -39,7 +39,6 @@ jobs:
 
     - name: Import existing S3 bucket
       run: terraform import -var="bucket_name=${{ secrets.S3_BUCKET_NAME }}" aws_s3_bucket.website_bucket ${{ secrets.S3_BUCKET_NAME }}
-
       continue-on-error: true
 
     - name: Terraform Apply
@@ -51,3 +50,4 @@ jobs:
     - name: Upload to S3
       run: |
         aws s3 sync dist/ s3://${{ secrets.S3_BUCKET_NAME }} --delete
+        aws s3 cp index.html s3://${{ secrets.S3_BUCKET_NAME }}/index.html

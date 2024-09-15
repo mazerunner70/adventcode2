@@ -37,7 +37,38 @@ resource "aws_s3_bucket_acl" "website_bucket" {
   acl    = "public-read"
 }
 
+# Create an IAM policy for S3 bucket access
+resource "aws_iam_policy" "s3_access_policy" {
+  name        = "s3_access_policy"
+  path        = "/"
+  description = "IAM policy for accessing S3 bucket"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal: "*"
+        Action = [
+          "s3:GetObject"
+        ]
+        Resource = [
+          aws_s3_bucket.website_bucket.arn,
+          "${aws_s3_bucket.website_bucket.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+# Attach the S3 access policy to the IAM user
+resource "aws_iam_user_policy_attachment" "user_s3_policy_attachment" {
+  user       = aws_iam_user.s3_user.name
+  policy_arn = aws_iam_policy.s3_access_policy.arn
+}
+
 output "website_endpoint" {
   value       = aws_s3_bucket.website_bucket.website_endpoint
   description = "The website endpoint URL"
 }
+
